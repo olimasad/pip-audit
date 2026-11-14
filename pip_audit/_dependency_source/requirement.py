@@ -233,10 +233,11 @@ class RequirementSource(DependencySource):
                 and (req.marker is None or req.marker.evaluate())
                 and req.req is not None
             ):
-                duplicate_req_specifier = req_specifiers.get(req.name)
+                dep_name = canonicalize_name(req.name)
+                duplicate_req_specifier = req_specifiers.get(dep_name)
 
                 if not duplicate_req_specifier:
-                    req_specifiers[req.name] = req.specifier
+                    req_specifiers[dep_name] = req.specifier
 
                 elif duplicate_req_specifier != req.specifier:
                     raise RequirementFixError(
@@ -325,10 +326,11 @@ class RequirementSource(DependencySource):
                 # See: https://github.com/nedbat/coveragepy/issues/198
                 continue  # pragma: no cover
 
-            duplicate_req_specifier = req_specifiers.get(req.name)
+            dep_name = canonicalize_name(req.name)
+            duplicate_req_specifier = req_specifiers.get(dep_name)
 
             if not duplicate_req_specifier:
-                req_specifiers[req.name] = req.specifier
+                req_specifiers[dep_name] = req.specifier
 
             # We have a duplicate requirement for the same package
             # but different specifiers, meaning a badly resolved requirements.txt

@@ -580,6 +580,36 @@ def test_requirement_source_disable_pip_duplicate_dependencies_diff_specifier(re
         list(source.collect())
 
 
+def test_requirement_source_disable_pip_duplicate_dependencies_across_files(req_file):
+    source = _init_requirement(
+        [
+            (req_file(), "setuptools==68.0.0"),
+            (req_file(), "setuptools==68.0.0"),
+        ],
+        disable_pip=True,
+        no_deps=True,
+    )
+
+    specs = list(source.collect())
+
+    assert specs == [ResolvedDependency(name="setuptools", version=Version("68.0.0"))]
+
+
+def test_requirement_source_disable_pip_duplicate_name_casing(req_file):
+    source = _init_requirement(
+        [
+            (req_file(), "setuptools==68.0.0"),
+            (req_file(), "Setuptools==68.0.0"),
+        ],
+        disable_pip=True,
+        no_deps=True,
+    )
+
+    specs = list(source.collect())
+
+    assert specs == [ResolvedDependency(name="setuptools", version=Version("68.0.0"))]
+
+
 def test_requirement_source_no_double_open(monkeypatch, req_file):
     source = _init_requirement([(req_file(), "flask==2.0.1")])
 
